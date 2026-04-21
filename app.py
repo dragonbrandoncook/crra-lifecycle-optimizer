@@ -35,18 +35,18 @@ st.set_page_config(
 PRECOMPUTED_DIR = Path(__file__).parent / "precomputed"
 
 GAMMA_PRESETS = [
-    {"id": "agg", "label": "Aggressive",   "gamma": 2.0,  "color": "#34D399", "file": "spy_baseline_g2.npz"},
-    {"id": "mod", "label": "Moderate",     "gamma": 3.84, "color": "#38BDF8", "file": "spy_baseline_g3p84.npz"},
-    {"id": "con", "label": "Conservative", "gamma": 7.0,  "color": "#A78BFA", "file": "spy_baseline_g7.npz"},
+    {"id": "agg", "label": "Aggressive",   "gamma": 2.0,  "color": "#FFC72C", "file": "spy_baseline_g2.npz"},
+    {"id": "mod", "label": "Moderate",     "gamma": 3.84, "color": "#8E1B34", "file": "spy_baseline_g3p84.npz"},
+    {"id": "con", "label": "Conservative", "gamma": 7.0,  "color": "#AC9155", "file": "spy_baseline_g7.npz"},
 ]
 
 ASSET_PRESETS = [
-    ("SPY",  "S&P 500 ETF",   "#38BDF8"),
-    ("QQQ",  "NASDAQ ETF",    "#A78BFA"),
-    ("VTI",  "Total Market",  "#34D399"),
-    ("AAPL", "Apple Inc.",    "#FB923C"),
-    ("TLT",  "20yr Treasury", "#F472B6"),
-    ("VXUS", "Intl. ex-US",   "#FBBF24"),
+    ("SPY",  "S&P 500 ETF",   "#FFC72C"),
+    ("QQQ",  "NASDAQ ETF",    "#8E1B34"),
+    ("VTI",  "Total Market",  "#AC9155"),
+    ("AAPL", "Apple Inc.",    "#E97A26"),
+    ("TLT",  "20yr Treasury", "#5E1219"),
+    ("VXUS", "Intl. ex-US",   "#E0C56E"),
 ]
 ASSET_NAMES  = {t: n for t, n, _ in ASSET_PRESETS}
 ASSET_COLORS = {t: c for t, _, c in ASSET_PRESETS}
@@ -83,7 +83,7 @@ st.markdown("""
     /* Section headers */
     h1, h2, h3 { color: #F1F5F9; }
     /* Code/mono accents */
-    code { color: #5EEAD4; background: rgba(94,234,212,0.08); }
+    code { color: #FFC72C; background: rgba(255,199,44,0.10); }
 </style>
 """, unsafe_allow_html=True)
 
@@ -178,7 +178,7 @@ with st.sidebar:
     st.markdown(
         '<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">'
         '<div style="width:26px;height:26px;border-radius:6px;'
-        'background:linear-gradient(135deg,#1D4ED8,#38BDF8);'
+        'background:linear-gradient(135deg,#501214,#FFC72C);'
         'display:flex;align-items:center;justify-content:center;'
         'box-shadow:0 0 12px rgba(56,189,248,0.4);'
         'color:#F8FAFC;font-weight:800;font-size:13px;">γ</div>'
@@ -244,7 +244,7 @@ with st.sidebar:
         γ = <span style="color:{p['color']};font-weight:700">{p['gamma']:.2f}</span><br>
         θ = {theta_val:.2e}<br>
         k = $490K<br>
-        SS = <span style="color:{'#FB923C' if ss_changed else '#94A3B8'};font-weight:{700 if ss_changed else 400}">${st.session_state.ss_monthly:,}/mo</span><br>
+        SS = <span style="color:{'#FFC72C' if ss_changed else '#94A3B8'};font-weight:{700 if ss_changed else 400}">${st.session_state.ss_monthly:,}/mo</span><br>
         δ = 1.000<br>
         n = 5,000 paths (live)
         </div>""",
@@ -263,7 +263,7 @@ with st.sidebar:
 gamma_preset = get_preset(st.session_state.gamma_preset)
 gamma        = gamma_preset["gamma"]
 ticker       = st.session_state.ticker
-ticker_color = ASSET_COLORS.get(ticker, "#FB923C")
+ticker_color = ASSET_COLORS.get(ticker, "#FFC72C")
 ss_monthly   = float(st.session_state.ss_monthly)
 
 # Trigger compute
@@ -416,7 +416,7 @@ with tab_results:
                 font-size:12px;color:#94A3B8;line-height:1.7;">
                 <div style="color:#E2E8F0;font-weight:700;font-size:11px;margin-bottom:6px;letter-spacing:0.05em;">INTERPRETATION</div>
                 Optimal equity weight shifted <strong>{direction}</strong> from
-                <strong style="color:#38BDF8">{b['opt_w']*100:.1f}%</strong> (SPY) to
+                <strong style="color:#FFC72C">{b['opt_w']*100:.1f}%</strong> (SPY) to
                 <strong style="color:{ticker_color}">{l['opt_w']*100:.1f}%</strong> ({live_t}).
                 This reflects {live_t}'s {vol_note}.{ss_note}
                 </div>""",
@@ -439,17 +439,17 @@ with tab_surface:
         fig.add_trace(go.Scatter(
             x=baseline["weights"]*100, y=baseline["eu"],
             mode="lines", name=f"SPY baseline (50k, γ={gamma:.2f})",
-            line=dict(color="#38BDF8", width=2.5),
+            line=dict(color="#FFC72C", width=2.5),
         ))
         fig.add_vline(x=float(baseline["optimal_w"])*100, line_dash="dash",
-                      line_color="#38BDF8", opacity=0.6,
+                      line_color="#FFC72C", opacity=0.6,
                       annotation_text=f"SPY w*={float(baseline['optimal_w'])*100:.1f}%",
-                      annotation_font_color="#38BDF8")
+                      annotation_font_color="#FFC72C")
 
     if st.session_state.live_results is not None:
         r = st.session_state.live_results
         live_t = st.session_state.live_ticker
-        c = ASSET_COLORS.get(live_t, "#FB923C")
+        c = ASSET_COLORS.get(live_t, "#FFC72C")
         fig.add_trace(go.Scatter(
             x=np.asarray(r["weights"])*100, y=r["eu"],
             mode="lines+markers", name=f"{live_t} (5k + quadratic)",
@@ -493,7 +493,7 @@ with tab_surface:
         <strong style="color:#E2E8F0;">What you're looking at:</strong>
         Each point represents a full lifecycle simulation — 480 months of accumulation (age 25–65)
         followed by up to 408 months of drawdown, with stochastic mortality from SSA 2022 tables.
-        The peak is <strong style="color:#38BDF8;">w*</strong>, the equity weight that maximizes
+        The peak is <strong style="color:#FFC72C;">w*</strong>, the equity weight that maximizes
         expected CRRA utility across all simulated lifetimes. A flatter curve means the model is
         less sensitive to the exact allocation.
         </div>""",
@@ -524,7 +524,7 @@ with tab_explainer:
             border:1px solid #1E293B;border-radius:8px;overflow:hidden;">
             <div style="background:linear-gradient(90deg,#1E293B,transparent);padding:10px 16px;
             font-size:12px;color:#E2E8F0;font-weight:700;">
-            <span style="color:#38BDF8;margin-right:10px;">{num}</span>{q}
+            <span style="color:#FFC72C;margin-right:10px;">{num}</span>{q}
             </div>
             <div style="padding:13px 16px;font-size:12px;color:#94A3B8;line-height:1.75;">{a}</div>
             </div>""",
@@ -532,9 +532,9 @@ with tab_explainer:
         )
     st.markdown(
         """<div style="background:linear-gradient(90deg,rgba(217,119,6,0.1),transparent);
-        border:1px solid rgba(217,119,6,0.22);border-left:3px solid #D97706;
-        border-radius:6px;padding:12px 16px;font-size:11px;color:#FBBF24;line-height:1.7;">
-        <strong style="color:#F59E0B;">Disclaimer:</strong>
+        border:1px solid rgba(142,27,52,0.30);border-left:3px solid #8E1B34;
+        border-radius:6px;padding:12px 16px;font-size:11px;color:#E0C56E;line-height:1.7;">
+        <strong style="color:#FFC72C;">Disclaimer:</strong>
         This tool is a class demonstration of CRRA lifecycle optimization methodology.
         It does not constitute investment advice. All results are based on historical
         return simulations and should not be used for financial planning decisions.
