@@ -116,6 +116,17 @@ st.markdown("""
     h1, h2, h3 { color: #501214; }
     section[data-testid="stSidebar"] h1, section[data-testid="stSidebar"] h2,
     section[data-testid="stSidebar"] h3 { color: #FFC72C; }
+    /* Tab labels — maroon on the light main panel */
+    .stTabs [data-baseweb="tab-list"] button p,
+    .stTabs [data-baseweb="tab-list"] button span,
+    button[role="tab"] p, button[role="tab"] span {
+        color: #501214 !important;
+        font-weight: 700 !important;
+    }
+    button[role="tab"][aria-selected="true"] p,
+    button[role="tab"][aria-selected="true"] span {
+        color: #8E1B34 !important;
+    }
     /* Code/mono accents */
     code { color: #FFC72C; background: rgba(255,199,44,0.10); }
 </style>
