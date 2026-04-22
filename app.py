@@ -56,9 +56,41 @@ ASSET_COLORS = {t: c for t, _, c in ASSET_PRESETS}
 # ============================================================================
 st.markdown("""
 <style>
-    /* Dark base */
-    .stApp { background: radial-gradient(ellipse at top left, #0F172A 0%, #0B0F1A 60%); }
-    section[data-testid="stSidebar"] > div { background: rgba(15,23,42,0.85); }
+    /* Light main panel + maroon sidebar */
+    .stApp { background: #FFFFFF; }
+    section[data-testid="stSidebar"] > div { background: #2C0F12; }
+    /* Force light text inside the maroon sidebar (textColor is now dark globally) */
+    section[data-testid="stSidebar"] * { color: #F1F5F9; }
+    section[data-testid="stSidebar"] .stCaption,
+    section[data-testid="stSidebar"] [data-testid="stCaptionContainer"] { color: #E0C56E !important; }
+    /* Sidebar buttons — keep them maroon-themed instead of cream */
+    section[data-testid="stSidebar"] .stButton > button {
+        background: #4A1318 !important;
+        color: #F1F5F9 !important;
+        border: 1px solid #6B1B22 !important;
+    }
+    section[data-testid="stSidebar"] .stButton > button:hover {
+        background: #6B1B22 !important;
+        border-color: #FFC72C !important;
+    }
+    section[data-testid="stSidebar"] .stButton > button[kind="primary"] {
+        background: #8E1B34 !important;
+        border: 1px solid #FFC72C !important;
+        color: #FFFFFF !important;
+    }
+    section[data-testid="stSidebar"] .stButton > button[kind="primary"]:hover {
+        background: #A52440 !important;
+    }
+    /* Sidebar text input (Custom ticker) */
+    section[data-testid="stSidebar"] input[type="text"],
+    section[data-testid="stSidebar"] textarea {
+        background: #4A1318 !important;
+        color: #F1F5F9 !important;
+        border: 1px solid #6B1B22 !important;
+    }
+    section[data-testid="stSidebar"] input[type="text"]::placeholder {
+        color: #B89B6E !important;
+    }
     /* Tighter buttons */
     .stButton > button {
         font-family: 'JetBrains Mono', 'Fira Code', monospace;
@@ -68,8 +100,8 @@ st.markdown("""
     }
     /* Metric card look */
     div[data-testid="stMetric"] {
-        background: linear-gradient(135deg, rgba(15,23,42,0.95), rgba(15,23,42,0.6));
-        border: 1px solid #1E293B;
+        background: linear-gradient(135deg, rgba(44,15,18,0.95), rgba(20,5,7,0.6));
+        border: 1px solid #3D1116;
         border-radius: 8px;
         padding: 14px 16px;
     }
@@ -80,8 +112,10 @@ st.markdown("""
         text-transform: uppercase;
     }
     div[data-testid="stMetricValue"] { font-size: 26px !important; font-weight: 700; }
-    /* Section headers */
-    h1, h2, h3 { color: #F1F5F9; }
+    /* Section headers — maroon for the light main area */
+    h1, h2, h3 { color: #501214; }
+    section[data-testid="stSidebar"] h1, section[data-testid="stSidebar"] h2,
+    section[data-testid="stSidebar"] h3 { color: #FFC72C; }
     /* Code/mono accents */
     code { color: #FFC72C; background: rgba(255,199,44,0.10); }
 </style>
@@ -239,7 +273,7 @@ with st.sidebar:
     p = get_preset(st.session_state.gamma_preset)
     theta_val = 2360 * (12 ** p["gamma"])
     st.markdown(
-        f"""<div style="background:rgba(30,41,59,0.5);border:1px solid #1E293B;border-radius:6px;padding:10px 12px;font-size:10px;line-height:1.7;color:#94A3B8;">
+        f"""<div style="background:rgba(44,15,18,0.55);border:1px solid #3D1116;border-radius:6px;padding:10px 12px;font-size:10px;line-height:1.7;color:#94A3B8;">
         <div style="color:#475569;letter-spacing:0.12em;font-size:9px;margin-bottom:6px;">ACTIVE PARAMS</div>
         γ = <span style="color:{p['color']};font-weight:700">{p['gamma']:.2f}</span><br>
         θ = {theta_val:.2e}<br>
@@ -299,14 +333,14 @@ hdr_l, hdr_r = st.columns([3, 1])
 with hdr_l:
     st.markdown(
         '<div style="display:flex;align-items:center;gap:12px;">'
-        '<div style="color:#F8FAFC;font-weight:700;font-size:18px;letter-spacing:0.08em;">CRRA LIFECYCLE OPTIMIZER</div>'
-        '<div style="color:#64748B;font-size:10px;letter-spacing:0.15em;">WELFARE-MAXIMIZING ALLOCATION ENGINE</div>'
+        '<div style="color:#501214;font-weight:800;font-size:18px;letter-spacing:0.08em;">CRRA LIFECYCLE OPTIMIZER</div>'
+        '<div style="color:#8E1B34;font-size:10px;letter-spacing:0.15em;">WELFARE-MAXIMIZING ALLOCATION ENGINE</div>'
         '</div>',
         unsafe_allow_html=True,
     )
 with hdr_r:
     st.markdown(
-        '<div style="text-align:right;font-size:10px;color:#475569;letter-spacing:0.08em;">'
+        '<div style="text-align:right;font-size:10px;color:#8E1B34;font-weight:700;letter-spacing:0.08em;">'
         'QFE5315 · TEXAS STATE UNIVERSITY'
         '</div>',
         unsafe_allow_html=True,
@@ -411,8 +445,8 @@ with tab_results:
             ss_note   = (f" A higher SS floor (${int(live_ss):,}/mo) reduces the consequence of portfolio shortfalls — typically pushes optimal weight upward."
                          if ss_changed else "")
             st.markdown(
-                f"""<div style="margin-top:16px;background:linear-gradient(135deg,rgba(15,23,42,0.7),rgba(15,23,42,0.4));
-                border:1px solid #1E293B;border-left:3px solid {ticker_color};border-radius:6px;padding:14px 18px;
+                f"""<div style="margin-top:16px;background:linear-gradient(135deg,rgba(20,5,7,0.7),rgba(20,5,7,0.4));
+                border:1px solid #3D1116;border-left:3px solid {ticker_color};border-radius:6px;padding:14px 18px;
                 font-size:12px;color:#94A3B8;line-height:1.7;">
                 <div style="color:#E2E8F0;font-weight:700;font-size:11px;margin-bottom:6px;letter-spacing:0.05em;">INTERPRETATION</div>
                 Optimal equity weight shifted <strong>{direction}</strong> from
@@ -475,11 +509,11 @@ with tab_surface:
                       annotation_font_color=c)
 
     fig.update_layout(
-        plot_bgcolor="rgba(15,23,42,0.6)",
+        plot_bgcolor="rgba(20,5,7,0.6)",
         paper_bgcolor="rgba(0,0,0,0)",
         font=dict(family="JetBrains Mono, monospace", color="#94A3B8", size=11),
-        xaxis=dict(title="Equity weight (%)", gridcolor="#1E293B", zerolinecolor="#1E293B"),
-        yaxis=dict(title="E[U]",              gridcolor="#1E293B", zerolinecolor="#1E293B"),
+        xaxis=dict(title="Equity weight (%)", gridcolor="#3D1116", zerolinecolor="#3D1116"),
+        yaxis=dict(title="E[U]",              gridcolor="#3D1116", zerolinecolor="#3D1116"),
         hovermode="x unified",
         height=420,
         legend=dict(orientation="h", y=-0.18, x=0.5, xanchor="center"),
@@ -489,7 +523,7 @@ with tab_surface:
 
     st.markdown(
         """<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.7;
-        background:rgba(15,23,42,0.5);border:1px solid #1E293B;border-radius:6px;padding:12px 16px;">
+        background:rgba(20,5,7,0.5);border:1px solid #3D1116;border-radius:6px;padding:12px 16px;">
         <strong style="color:#E2E8F0;">What you're looking at:</strong>
         Each point represents a full lifecycle simulation — 480 months of accumulation (age 25–65)
         followed by up to 408 months of drawdown, with stochastic mortality from SSA 2022 tables.
@@ -520,9 +554,9 @@ with tab_explainer:
     ]
     for num, q, a in items:
         st.markdown(
-            f"""<div style="margin-bottom:14px;background:linear-gradient(135deg,rgba(15,23,42,0.92),rgba(15,23,42,0.55));
-            border:1px solid #1E293B;border-radius:8px;overflow:hidden;">
-            <div style="background:linear-gradient(90deg,#1E293B,transparent);padding:10px 16px;
+            f"""<div style="margin-bottom:14px;background:linear-gradient(135deg,rgba(20,5,7,0.92),rgba(20,5,7,0.55));
+            border:1px solid #3D1116;border-radius:8px;overflow:hidden;">
+            <div style="background:linear-gradient(90deg,#3D1116,transparent);padding:10px 16px;
             font-size:12px;color:#E2E8F0;font-weight:700;">
             <span style="color:#FFC72C;margin-right:10px;">{num}</span>{q}
             </div>
